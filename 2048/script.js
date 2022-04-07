@@ -1,46 +1,74 @@
+import Grid from "./Grid.js"
+import Tile from "./Tile.js"
+
 const gameBoard = document.getElementById("game-board")
-const GRID_SIZE = 4
-const CELL_SIZE = 20
-const CELL_GAP = 2
 
-class Grid {
-	#cells
+const grid = new Grid(gameBoard)
+grid.randomEmptyCell().tile = new Tile(gameBoard)
+grid.randomEmptyCell().tile = new Tile(gameBoard)
+setupInput()
 
-	constructor(gridElement) {
-		gridElement.style.setProperty("--grid-size", GRID_SIZE)
-	    gridElement.style.setProperty("--cell-size", `${CELL_SIZE}vmin`)
-	    gridElement.style.setProperty("--cell-gap", `${CELL_GAP}vmin`)
-	    this.#cells = createCellElements(gridElement).map((cellElement, index) => {
-	    	return new Cell(
-	    		cellElement, 
-	    		index % GRID_SIZE, 
-	    		Math.floor(index / GRID_SIZE)
-    		)
-	    })
-	}
+function setupInput() {
+	window.addEventListener("keydown", handleInput, { once: true})
 }
 
-class Cell {
-	#cellElement
-	#x
-	#y
-	constructor(cellElement, x, y) {
-		this.#cellElement = cellElement
-		this.#x = x
-		this.#y = y
+function handleInput(e) {
+	switch (e.key) {
+		case "ArrowUp":
+			moveUp()
+			break
+		case "ArrowDown":
+			moveDown()
+			break
+		case "ArrowLeft":
+			moveLeft()
+			break
+		case "ArrowRight":
+			moveRight()
+			break
+		default:
+			setupInput()
+			return
 	}
+	setupInput()
 }
 
-function createCellElements(gridElement) {
-	const cells = []
-	for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-		const cell = document.createElement("div")
-		cell.classList.add("cell")
-		cells.push(cell)
-		gridElement.append(cell)
-	}
-	return cells
+function moveUp() {
+	return slideTiles(grid.cellsByColumn)
 }
 
-const newGrid = new Grid(gameBoard)
+function moveDown() {
+	return slideTiles(grid.cellsByColumn.map(column => [...column].reverse()))
+}
 
+function moveLeft() {
+	return slideTiles(grid.cellsByRow)
+}
+
+function moveRight() {
+	return slideTiles(grid.cellsByRow.map(row => [...row].reverse()))
+}
+
+function slideTiles(cells) {
+	cells.forEach(group => {
+		for (let i = 1; i < group.length; i++) {
+			const cell = group[i]
+			if (cell.tile == null) continue
+			let lastValidCell
+			for (let j = i - 1; j >= 0; j--) {
+				const moveToCell = group[j]
+				if (!moveToCell.canAccept(cell.tile)) break
+				lastValidCell = moveToCell
+			}
+
+			if (lastValidCell != null) {
+				if (lastValidCell.tile != null) {
+					lastValidCell.mergeTile = cell.tile
+				} else {
+					lastValidCell.tile = cell.tile
+				}
+				cell.tile = null
+			}
+		}
+	})
+}

@@ -29,7 +29,7 @@ body {
 	border-radius: 1vmin;
 }
 
-.tile{
+.tile {
 	position: absolute;
 	display: flex;
 	justify-content: center;
