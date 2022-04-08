@@ -33,4 +33,16 @@ export default class Tile {
 		this.#y = value
 		this.#tileElement.style.setProperty("--y", value)
 	}
+
+	remove() {
+		this.#tileElement.remove()
+	}
+
+	waitForTransition(animation = false) {
+		return new Promise(resolve => {
+			this.#tileElement.addEventListener(animation ? "animationend" : "transitionend", resolve, {
+				once: true
+			})
+		})
+	}
 }
