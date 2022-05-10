@@ -1,3 +1,5 @@
+//ARREGLAR LOS PROYECTILES, SE CARGAN A TODOS LOS INVADERS
+
 const canvas = document.querySelector('canvas')
 const context = canvas.getContext('2d')
 
@@ -56,7 +58,7 @@ class Player {
 
 class Projectile {
 	constructor({ position, velocity }) {
-		this.position = position
+ 		this.position = position
 		this.velocity = velocity
 
 		this.radius = 4
@@ -254,7 +256,7 @@ function animate() {
 			grid.invaders[Math.floor(Math.random() * grid.invaders.length)].shoot(invaderProjectiles)
 		}
 		grid.invaders.forEach((invader, i) => {
-			invader.update({velocity: grid.velocity})
+			invader.update({ velocity: grid.velocity })
 			projectiles.forEach((projectile, j) => {
 				if (
 					projectile.position.y - projectile.radius <= invader.position.y + invader.height &&
@@ -276,13 +278,13 @@ function animate() {
 
 							if (grid.invaders.length > 0) {
 								const firstInvader = grid.invaders[0]
-								const lastInvader = grid.invaders[grid.invaders.length - 1]
+							const lastInvader = grid.invaders[grid.invaders.length - 1]
 
 								grid.width = lastInvader.position.x - firstInvader.position.x + lastInvader.width
 								grid.position.x = firstInvader.position.x
 							}
 						} else {
-							grids.splice(gridIndex, 1)
+							grid.splice(gridIndex, 1)
 						}
 
 					}, 0)
