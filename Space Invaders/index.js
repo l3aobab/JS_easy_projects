@@ -15,6 +15,7 @@ class Player {
 		}
 
 		this.rotation = 0
+		this.opacity = 1
 
 		const image = new Image()
 		image.src = './img/spaceship.png'
@@ -32,6 +33,7 @@ class Player {
 
 	draw() {
 		context.save()
+		context.globalAlpha = this.opacity
 		context.translate(player.position.x + player.width / 2, player.position.y + player.height / 2)
 		context.rotate(this.rotation)
 		
@@ -250,6 +252,10 @@ const keys = {
 
 let frames = 0
 let randomInterval = ((Math.random() * 500) + 1000)
+let game = {
+	over: false,
+	active: true
+}
 
 for (let i = 0; i < 100; i++) {
 	particles.push(new Particle({
@@ -285,6 +291,7 @@ function createParticles({ object, color, fades }) {
 }
 
 function animate() {
+	if (!game.active) return
 	requestAnimationFrame(animate)
 	context.fillStyle = 'black'
 	context.fillRect(0, 0, canvas.width, canvas.height)
@@ -318,10 +325,17 @@ function animate() {
 			invaderProjectile.position.x + invaderProjectile.width >= player.position.x &&
 			invaderProjectile.position.x <= player.position.x + player.width
 		) {
+			console.log('you lose')
 			setTimeout(() => {
 				invaderProjectiles.splice(index, 1)
+				player.opacity = 0
+				game.over = true
 			}, 0)
-			console.log('you lose')
+
+			setTimeout(() => {
+				game.active = false
+			}, 2000)
+			
 			createParticles({
 				object: player,
 				color: 'white',
@@ -380,7 +394,6 @@ function animate() {
 						} else {
 							grid.splice(gridIndex, 1)
 						}
-
 					}, 0)
 				}
 			})
@@ -410,6 +423,8 @@ function animate() {
 animate()
 
 addEventListener('keydown', ({ key }) => {
+	if (game.over) return
+
 	switch (key) {
 		case 'a':
 			keys.a.pressed = true
