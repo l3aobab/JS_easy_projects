@@ -1,0 +1,1 @@
+Imagen que se adapta al tama–o de la pantalla del usuario cambiando la imagen mostrada dependiendo del ancho de la misma. La idea original consiste en que la segunda imagen sea una ampliaci—n de la original.Este proceso est‡ pensado para p‡ginas web en formato tanto m—vil como en escritorio.
